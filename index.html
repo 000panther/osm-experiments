@@ -3,6 +3,9 @@
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
         integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
         crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+        integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+        crossorigin=""></script>
         <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
         <script type='text/javascript' src='node_modules/jquery/dist/jquery.min.js'></script>
         
@@ -35,40 +38,65 @@ var geojsonMarkerOptions = {
 	fillOpacity: 0
 };
 
-bicycleParking.features.map(function(feature) {
+bicycleParking.features = bicycleParking.features.map(function(feature) {
    if(feature.geometry.type === 'Point') {
        return feature;
    } else if (feature.geometry.type === 'Polygon') {
-       feature.geometry = {
-        "type": "Point",
-        "coordinates": [
-          14.2833953,
-          48.3140795
-        ]
-       }
+       var centered = turf.center(feature);
+       console.log(centered);
+       return centered;
+    //    feature.geometry = {
+    //     "type": "Point",
+    //     "coordinates": centered,
+    //    }
+    //    return feature;
    } else {
        console.log('unknown feature: ');
        console.log(feature);
    }
 });
 
-var geojson = L.geoJSON(bicycleParking,
-{
-    pointToLayer: function (feature, latlng) {
-		return L.circleMarker(latlng, geojsonMarkerOptions);
-    }
-}
-);
-geojson.eachLayer((layer) => {
+// var geojson = L.geoJSON(bicycleParking,
+// {
+//     pointToLayer: function (feature, latlng) {
+// 		return L.circleMarker(latlng, geojsonMarkerOptions);
+//     }
+// }
+// );
+// geojson.eachLayer((layer) => {
 
-    if(layer.feature.geometry.type === 'Polygon') {
-        const points = layer.feature.geometry.coordinates[0];
-        const center = L.polygon(points).getCenter();
-        console.log('polygon', points, center);
-        console.log(layer);
+//     if(layer.feature.geometry.type === 'Polygon') {
+//         const points = layer.feature.geometry.coordinates[0];
+//         const center = L.polygon(points).getCenter();
+//         console.log('polygon', points, center);
+//         console.log(layer);
+//     }
+// });
+// geojson.addTo(map);
+
+
+bicycleParking.features = bicycleParking.features.filter((f) => {
+    return !!f;
+})
+
+console.log(bicycleParking.features);
+
+bicycleParking.features.forEach((feature) => {
+    if(feature && feature.geometry) {
+        var coordinates = feature.geometry.coordinates;
+        console.log('add circle: ' + coordinates);
+        var circle = L.circle(coordinates, {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 500
+        }).addTo(map);
+    } else {
+        console.log('weird feature');
+        console.log(feature);
+        return null;
     }
-});
-geojson.addTo(map);
+})
 
     
 
