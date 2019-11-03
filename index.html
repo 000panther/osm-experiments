@@ -14,6 +14,8 @@
                 height: 800px;
             }
         </style>
+        
+        <script type='text/javascript' src="bicycle_parking.geojson.js"></script>
 
         <script type='text/javascript'>
             $(() => {
@@ -23,9 +25,28 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-var imageUrl = './Verkehrsstadtplan-2012.png',
-    imageBounds = [[48.149263332761116, 14.191097334683427], [48.351366276927756, 14.388247190356662]];
-L.imageOverlay(imageUrl, imageBounds).addTo(map);
+// var imageUrl = './Verkehrsstadtplan-2012.png',
+//     imageBounds = [[48.149263332761116, 14.191097334683427], [48.351366276927756, 14.388247190356662]];
+// L.imageOverlay(imageUrl, imageBounds).addTo(map);
+
+
+var geojsonMarkerOptions = {
+	radius: 25,
+	color: "#000",
+	weight: 1,
+	opacity: 1,
+	fillOpacity: 0
+};
+
+L.geoJSON(bicycleParking,
+{
+    pointToLayer: function (feature, latlng) {
+		return L.circleMarker(latlng, geojsonMarkerOptions);
+    }
+}
+).addTo(map);
+
+    
 
 // L.marker([51.5, -0.09]).addTo(map)
 //     .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
