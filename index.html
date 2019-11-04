@@ -81,22 +81,24 @@ bicycleParking.features = bicycleParking.features.filter((f) => {
 
 console.log(bicycleParking.features);
 
-bicycleParking.features.forEach((feature) => {
+//bicycleParking.features.forEach((feature) => {
+for(var feature of bicycleParking.features) {
     if(feature && feature.geometry) {
         var coordinates = feature.geometry.coordinates;
         console.log('add circle: ' + coordinates);
-        var circle = L.circle(coordinates, {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 500
+        var circle = L.circle(L.GeoJSON.coordsToLatLng(coordinates), {
+            color: 'transparent',
+            fillColor: '#0f3',
+            fillOpacity: 0.2,
+            radius: 45
         }).addTo(map);
     } else {
         console.log('weird feature');
         console.log(feature);
         return null;
     }
-})
+}
+//})
 
     
 
