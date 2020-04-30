@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "leaflet": "^1.5.1",
     "query-overpass": "^1.5.4"
   }
